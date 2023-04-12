@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "novaleg",
+    "novascrib"
+]
