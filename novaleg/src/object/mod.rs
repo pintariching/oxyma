@@ -1,10 +1,14 @@
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{self, alpha1, multispace1, space1},
-    combinator::{map, value},
-    number, IResult,
-};
+use nom::branch::alt;
+use nom::combinator::map;
+use nom::IResult;
+
+mod boolean;
+mod numeric;
+mod string;
+
+use boolean::*;
+use numeric::*;
+use string::*;
 
 #[derive(Debug)]
 pub struct Object {
@@ -30,15 +34,13 @@ pub enum ObjectType {
     Indirect(Identifier),
 }
 
-#[derive(Debug)]
-pub enum Numeric {
-    Int(i32),
-    UInt(u32),
-    Float(f32),
-}
-
 pub fn parse_object(input: &str) -> IResult<&str, Object> {
-    let (input, object_type) = alt((map(boolean, ObjectType::Boolean), string))(input)?;
+    let (input, object_type) = alt((
+        map(boolean, ObjectType::Boolean),
+        map(numeric, ObjectType::Numeric),
+        map(string, ObjectType::String),
+    ))(input)?;
+
     // let (input, number) = complete::u32(input)?;
     // let (input, _) = space1(input)?;
     // let (input, revision) = complete::u32(input)?;
@@ -50,24 +52,6 @@ pub fn parse_object(input: &str) -> IResult<&str, Object> {
     // let (input, _) = multispace1(input)?;
 
     // Ok((input, Object { number, revision }))
-    todo!()
-}
-
-pub fn boolean(input: &str) -> IResult<&str, bool> {
-    let parse_true = value(true, tag("true"));
-    let parse_false = value(false, tag("false"));
-
-    alt((parse_true, parse_false))(input)
-}
-
-pub fn numeric(input: &str) -> IResult<&str, Numeric> {
-    let parse_f32 = map(number::complete::le_f32, Numeric::Float);
-    // let parse_i32 = map(number::complete::le_i32, Numeric::Int);
-    // let (input, numeric) = alt()
-    todo!()
-}
-
-pub fn string(input: &str) -> IResult<&str, ObjectType> {
     todo!()
 }
 
