@@ -12,12 +12,6 @@ use nom::sequence::delimited;
 use nom::sequence::preceded;
 use nom::IResult;
 
-#[derive(Debug, PartialEq)]
-enum StringFragment<'a> {
-    Literal(&'a str),
-    EscapedChar(char),
-}
-
 fn character_code(input: &str) -> IResult<&str, char> {
     let take_3 = take(3usize);
     let parse_u32 = map_res(take_3, |oct| u32::from_str_radix(oct, 8));
@@ -40,6 +34,12 @@ fn parse_escaped_char(input: &str) -> IResult<&str, char> {
             character_code,
         )),
     )(input)
+}
+
+#[derive(Debug, PartialEq)]
+enum StringFragment<'a> {
+    Literal(&'a str),
+    EscapedChar(char),
 }
 
 fn parse_literal(input: &str) -> IResult<&str, &str> {
@@ -69,9 +69,8 @@ pub fn string(input: &str) -> IResult<&str, String> {
 
 #[cfg(test)]
 mod tests {
-    use nom::Finish;
-
     use super::*;
+    use nom::Finish;
 
     #[test]
     fn test_string() {
@@ -85,6 +84,7 @@ mod tests {
     fn test_character_code() {
         assert_eq!(character_code("101"), Ok(("", 'A')));
         assert_eq!(character_code("043"), Ok(("", '#')));
+        assert_eq!(character_code("04342"), Ok(("42", '#')));
 
         assert!(character_code("10a").finish().is_err());
     }

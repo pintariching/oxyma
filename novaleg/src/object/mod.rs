@@ -3,10 +3,12 @@ use nom::combinator::map;
 use nom::IResult;
 
 mod boolean;
+mod name;
 mod numeric;
 mod string;
 
 use boolean::*;
+use name::*;
 use numeric::*;
 use string::*;
 
