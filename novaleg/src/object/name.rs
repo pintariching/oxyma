@@ -96,5 +96,28 @@ mod tests {
         assert_eq!(name("/abc#42"), Ok(("", "abcB".to_string())));
         assert_eq!(name("/#42abc"), Ok(("", "Babc".to_string())));
         assert_eq!(name("/abc /def"), Ok(("/def", "abc".to_string())));
+
+        // Examples taken from the PDF 2.0 spec - table 4, page 28-29
+        assert_eq!(name("/Name1"), Ok(("", "Name1".to_string())));
+        assert_eq!(
+            name("/ASomewhatLongerName"),
+            Ok(("", "ASomewhatLongerName".to_string()))
+        );
+        assert_eq!(
+            name("/A;Name_With-Various***Characters?"),
+            Ok(("", "A;Name_With-Various***Characters?".to_string()))
+        );
+        assert_eq!(name("/@pattern"), Ok(("", "@pattern".to_string())));
+        assert_eq!(name("/.notdef"), Ok(("", ".notdef".to_string())));
+        assert_eq!(name("/Lime#20Green"), Ok(("", "Lime Green".to_string())));
+        assert_eq!(
+            name("/paired#28#29parentheses"),
+            Ok(("", "paired()parentheses".to_string()))
+        );
+        assert_eq!(
+            name("/The_Key_of_F#23_Minor"),
+            Ok(("", "The_Key_of_F#_Minor".to_string()))
+        );
+        assert_eq!(name("/A#42"), Ok(("", "AB".to_string())));
     }
 }
