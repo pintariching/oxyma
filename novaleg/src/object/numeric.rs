@@ -5,7 +5,7 @@ use nom::IResult;
 #[allow(unused)]
 #[derive(Debug, PartialEq)]
 pub enum Numeric {
-    Int(i32),
+    // Int(i32), not yet implemented
     Real(f32),
 }
 

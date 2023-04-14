@@ -1,5 +1,5 @@
 use nom::IResult;
-use object::{parse_object, Object};
+use object::{object_value, Object};
 use version::Version;
 
 use crate::version::pdf_version;
@@ -15,7 +15,13 @@ pub struct Pdf {
 
 pub fn pdf_parser(input: &str) -> IResult<&str, Pdf> {
     let (input, version) = pdf_version(input)?;
-    let (input, object) = parse_object(input)?;
+    let (input, value) = object_value(input)?;
 
-    Ok((input, Pdf { version, object }))
+    Ok((
+        input,
+        Pdf {
+            version,
+            object: Object { value },
+        },
+    ))
 }

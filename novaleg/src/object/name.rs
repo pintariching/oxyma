@@ -1,9 +1,9 @@
 use nom::branch::alt;
-use nom::bytes::complete::{is_not, tag, take, take_until};
+use nom::bytes::complete::{is_not, tag, take};
 use nom::character::complete::{char, not_line_ending};
-use nom::combinator::{all_consuming, eof, map, map_opt, map_res, verify};
+use nom::combinator::{map, map_opt, map_res, verify};
 use nom::multi::fold_many0;
-use nom::sequence::{delimited, preceded};
+use nom::sequence::{delimited, preceded, terminated};
 use nom::IResult;
 
 fn hex_code(input: &str) -> IResult<&str, char> {
@@ -36,7 +36,7 @@ fn parse_fragment(input: &str) -> IResult<&str, NameFragment> {
     ))(input)
 }
 
-fn name(input: &str) -> IResult<&str, String> {
+pub fn name(input: &str) -> IResult<&str, String> {
     let build_string = fold_many0(parse_fragment, String::new, |mut string, fragment| {
         match fragment {
             NameFragment::Literal(l) => string.push_str(l),
@@ -45,7 +45,12 @@ fn name(input: &str) -> IResult<&str, String> {
         string
     });
 
-    delimited(char('/'), build_string, alt((tag(" "), not_line_ending)))(input)
+    preceded(
+        char('/'),
+        terminated(build_string, preceded(tag(" "), tag("]"))),
+    )(input)
+
+    // delimited(char('/'), build_string, alt((tag(" "), not_line_ending)))(input)
 }
 
 #[cfg(test)]
@@ -96,6 +101,7 @@ mod tests {
         assert_eq!(name("/abc#42"), Ok(("", "abcB".to_string())));
         assert_eq!(name("/#42abc"), Ok(("", "Babc".to_string())));
         assert_eq!(name("/abc /def"), Ok(("/def", "abc".to_string())));
+        assert_eq!(name("/abc]"), Ok(("]", "abc".to_string())));
 
         // Examples taken from the PDF 2.0 spec - table 4, page 28-29
         assert_eq!(name("/Name1"), Ok(("", "Name1".to_string())));
