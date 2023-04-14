@@ -1,9 +1,9 @@
 use nom::branch::alt;
-use nom::bytes::complete::{is_not, tag, take};
-use nom::character::complete::{char, not_line_ending};
+use nom::bytes::complete::{is_not, tag, take, take_till};
+use nom::character::complete::char;
 use nom::combinator::{map, map_opt, map_res, verify};
 use nom::multi::fold_many0;
-use nom::sequence::{delimited, preceded, terminated};
+use nom::sequence::{delimited, preceded};
 use nom::IResult;
 
 fn hex_code(input: &str) -> IResult<&str, char> {
@@ -24,7 +24,7 @@ enum NameFragment<'a> {
 }
 
 fn parse_string(input: &str) -> IResult<&str, &str> {
-    let hash_space = is_not("# ");
+    let hash_space = is_not("# []");
 
     verify(hash_space, |s: &str| !s.is_empty())(input)
 }
@@ -45,12 +45,11 @@ pub fn name(input: &str) -> IResult<&str, String> {
         string
     });
 
-    preceded(
+    delimited(
         char('/'),
-        terminated(build_string, preceded(tag(" "), tag("]"))),
+        build_string,
+        alt((tag(" "), take_till(|c| c == ']' || c == '['))),
     )(input)
-
-    // delimited(char('/'), build_string, alt((tag(" "), not_line_ending)))(input)
 }
 
 #[cfg(test)]
@@ -93,6 +92,10 @@ mod tests {
             parse_fragment("abc /def"),
             Ok((" /def", NameFragment::Literal("abc")))
         );
+        assert_eq!(
+            parse_fragment("abc]"),
+            Ok(("]", NameFragment::Literal("abc")))
+        );
     }
 
     #[test]
@@ -102,6 +105,7 @@ mod tests {
         assert_eq!(name("/#42abc"), Ok(("", "Babc".to_string())));
         assert_eq!(name("/abc /def"), Ok(("/def", "abc".to_string())));
         assert_eq!(name("/abc]"), Ok(("]", "abc".to_string())));
+        assert_eq!(name("/abc["), Ok(("[", "abc".to_string())));
 
         // Examples taken from the PDF 2.0 spec - table 4, page 28-29
         assert_eq!(name("/Name1"), Ok(("", "Name1".to_string())));

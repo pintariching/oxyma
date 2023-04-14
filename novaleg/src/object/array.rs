@@ -54,5 +54,16 @@ mod tests {
                 ]
             )),
         );
+
+        assert_eq!(
+            array("[3.14 [false]]"),
+            Ok((
+                "",
+                vec![
+                    ObjectValue::Numeric(Numeric::Real(3.14)),
+                    ObjectValue::Array(vec![ObjectValue::Boolean(false)])
+                ]
+            ))
+        );
     }
 }
