@@ -19,6 +19,7 @@ use boolean::*;
 use dictionary::*;
 use name::*;
 use numeric::*;
+use stream::*;
 use string::*;
 
 #[derive(Debug)]
@@ -40,7 +41,7 @@ pub enum ObjectValue {
     Name(String),
     Array(Vec<ObjectValue>),
     Dictionary(HashMap<String, ObjectValue>),
-    Stream,
+    Stream(String),
     Null,
     Indirect(Identifier),
 }
@@ -55,6 +56,7 @@ pub fn object_value(input: &str) -> IResult<&str, ObjectValue> {
             map(name, ObjectValue::Name),
             map(array, ObjectValue::Array),
             map(dictionary, ObjectValue::Dictionary),
+            map(stream, ObjectValue::Stream),
         )),
     )(input)
 

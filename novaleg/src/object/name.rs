@@ -1,5 +1,5 @@
 use nom::branch::alt;
-use nom::bytes::complete::{is_not, tag, take, take_till};
+use nom::bytes::complete::{is_not, take, take_till};
 use nom::character::complete::char;
 use nom::combinator::{map, map_opt, map_res, verify};
 use nom::multi::fold_many0;
