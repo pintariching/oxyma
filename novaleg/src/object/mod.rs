@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use nom::branch::alt;
 use nom::character::complete::space0;
 use nom::combinator::map;
@@ -6,12 +8,15 @@ use nom::IResult;
 
 mod array;
 mod boolean;
+mod dictionary;
 mod name;
 mod numeric;
+mod stream;
 mod string;
 
 use array::*;
 use boolean::*;
+use dictionary::*;
 use name::*;
 use numeric::*;
 use string::*;
@@ -34,7 +39,7 @@ pub enum ObjectValue {
     String(String),
     Name(String),
     Array(Vec<ObjectValue>),
-    Dictionary,
+    Dictionary(HashMap<String, ObjectValue>),
     Stream,
     Null,
     Indirect(Identifier),
@@ -49,6 +54,7 @@ pub fn object_value(input: &str) -> IResult<&str, ObjectValue> {
             map(string, ObjectValue::String),
             map(name, ObjectValue::Name),
             map(array, ObjectValue::Array),
+            map(dictionary, ObjectValue::Dictionary),
         )),
     )(input)
 
@@ -63,8 +69,4 @@ pub fn object_value(input: &str) -> IResult<&str, ObjectValue> {
     // let (input, _) = multispace1(input)?;
 
     // Ok((input, Object { number, revision }))
-}
-
-pub fn dictionary(input: &str) -> IResult<&str, ObjectValue> {
-    todo!()
 }

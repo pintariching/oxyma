@@ -24,7 +24,7 @@ enum NameFragment<'a> {
 }
 
 fn parse_string(input: &str) -> IResult<&str, &str> {
-    let hash_space = is_not("# []");
+    let hash_space = is_not("# []\n\t");
 
     verify(hash_space, |s: &str| !s.is_empty())(input)
 }
@@ -48,7 +48,7 @@ pub fn name(input: &str) -> IResult<&str, String> {
     delimited(
         char('/'),
         build_string,
-        alt((tag(" "), take_till(|c| c == ']' || c == '['))),
+        take_till(|c| c == ']' || c == '[' || c == ' ' || c == '\n'),
     )(input)
 }
 
@@ -103,7 +103,7 @@ mod tests {
         assert_eq!(name("/abc"), Ok(("", "abc".to_string())));
         assert_eq!(name("/abc#42"), Ok(("", "abcB".to_string())));
         assert_eq!(name("/#42abc"), Ok(("", "Babc".to_string())));
-        assert_eq!(name("/abc /def"), Ok(("/def", "abc".to_string())));
+        assert_eq!(name("/abc /def"), Ok((" /def", "abc".to_string())));
         assert_eq!(name("/abc]"), Ok(("]", "abc".to_string())));
         assert_eq!(name("/abc["), Ok(("[", "abc".to_string())));
 
