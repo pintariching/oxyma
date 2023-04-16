@@ -25,7 +25,13 @@ mod tests {
         (random data)
         endstream"
             ),
-            Ok(("", "(random data)"))
+            Ok((
+                "",
+                "
+        (random data)
+        "
+                .to_string()
+            ))
         );
     }
 }

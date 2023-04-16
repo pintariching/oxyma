@@ -10,17 +10,19 @@ mod array;
 mod boolean;
 mod dictionary;
 mod name;
+mod null;
 mod numeric;
 mod stream;
 mod string;
 
-use array::*;
-use boolean::*;
-use dictionary::*;
-use name::*;
-use numeric::*;
-use stream::*;
-use string::*;
+use array::array;
+use boolean::boolean;
+use dictionary::dictionary;
+use name::name;
+use null::null;
+use numeric::{numeric, Numeric};
+use stream::stream;
+use string::string;
 
 #[derive(Debug)]
 pub struct Object {
@@ -57,6 +59,7 @@ pub fn object_value(input: &str) -> IResult<&str, ObjectValue> {
             map(array, ObjectValue::Array),
             map(dictionary, ObjectValue::Dictionary),
             map(stream, ObjectValue::Stream),
+            map(null, |_| ObjectValue::Null),
         )),
     )(input)
 
