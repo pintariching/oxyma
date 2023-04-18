@@ -25,7 +25,7 @@ use stream::stream;
 use string::string;
 
 #[derive(Debug)]
-pub struct Object {
+pub struct IndirectObject {
     pub value: ObjectValue,
 }
 

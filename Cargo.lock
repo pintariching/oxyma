@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "novaleg"
+name = "oxyma_reader"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -39,5 +39,5 @@ dependencies = [
 ]
 
 [[package]]
-name = "novascrib"
+name = "oxyma_writer"
 version = "0.1.0"

@@ -1,6 +1,6 @@
 [workspace]
 
 members = [
-    "novaleg",
-    "novascrib"
+    "oxyma_writer",
+    "oxyma_reader"
 ]

@@ -1,5 +1,4 @@
 use anyhow::Result;
-use novaleg::pdf_parser;
 
 #[derive(Debug, PartialEq)]
 struct PdfVersion {
@@ -8,11 +7,11 @@ struct PdfVersion {
 }
 
 fn main() -> Result<()> {
-    let pdf = include_str!("example.pdf");
-    let (input, pdf) = pdf_parser(pdf)?;
+    // let pdf = include_str!("example.pdf");
+    // let (input, pdf) = pdf_parser(pdf)?;
 
-    dbg!(pdf);
-    dbg!(input);
+    // dbg!(pdf);
+    // dbg!(input);
 
     Ok(())
 }
