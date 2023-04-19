@@ -1,14 +1,14 @@
-use std::collections::HashMap;
-
 use nom::branch::alt;
 use nom::character::complete::space0;
 use nom::combinator::map;
 use nom::sequence::preceded;
 use nom::IResult;
+use std::collections::HashMap;
 
 mod array;
 mod boolean;
 mod dictionary;
+mod indirect;
 mod name;
 mod null;
 mod numeric;
@@ -24,17 +24,6 @@ use numeric::{numeric, Numeric};
 use stream::stream;
 use string::string;
 
-#[derive(Debug)]
-pub struct IndirectObject {
-    pub value: ObjectValue,
-}
-
-#[derive(Debug, PartialEq)]
-pub struct Identifier {
-    obj_num: u32,
-    gen_num: u32,
-}
-
 #[derive(Debug, PartialEq)]
 pub enum ObjectValue {
     Boolean(bool),
@@ -45,7 +34,6 @@ pub enum ObjectValue {
     Dictionary(HashMap<String, ObjectValue>),
     Stream(String),
     Null,
-    Indirect(Identifier),
 }
 
 pub fn object_value(input: &str) -> IResult<&str, ObjectValue> {

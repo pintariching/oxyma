@@ -1,15 +1,9 @@
 use nom::branch::alt;
-use nom::bytes::complete::is_not;
-use nom::bytes::complete::take;
+use nom::bytes::complete::{is_not, take};
 use nom::character::complete::char;
-use nom::combinator::map;
-use nom::combinator::map_opt;
-use nom::combinator::map_res;
-use nom::combinator::value;
-use nom::combinator::verify;
+use nom::combinator::{map, map_opt, map_res, value, verify};
 use nom::multi::fold_many0;
-use nom::sequence::delimited;
-use nom::sequence::preceded;
+use nom::sequence::{delimited, preceded};
 use nom::IResult;
 
 fn character_code(input: &str) -> IResult<&str, char> {

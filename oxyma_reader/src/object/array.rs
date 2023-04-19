@@ -1,8 +1,6 @@
-use nom::character::complete::char;
-use nom::character::complete::space0;
+use nom::character::complete::{char, space0};
 use nom::multi::separated_list0;
-use nom::sequence::preceded;
-use nom::sequence::terminated;
+use nom::sequence::{preceded, terminated};
 use nom::IResult;
 
 use super::{object_value, ObjectValue};

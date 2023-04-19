@@ -1,9 +1,7 @@
-use nom::{
-    bytes::complete::{tag, take_until1},
-    combinator::map,
-    sequence::delimited,
-    IResult,
-};
+use nom::bytes::complete::{tag, take_until1};
+use nom::combinator::map;
+use nom::sequence::delimited;
+use nom::IResult;
 
 pub fn stream(input: &str) -> IResult<&str, String> {
     delimited(

@@ -1,4 +1,6 @@
-use nom::{bytes::complete::tag, combinator::map, IResult};
+use nom::bytes::complete::tag;
+use nom::combinator::map;
+use nom::IResult;
 
 pub fn null(input: &str) -> IResult<&str, ()> {
     map(tag("null"), |_| ())(input)
