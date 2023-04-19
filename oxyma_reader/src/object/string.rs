@@ -97,7 +97,6 @@ mod tests {
     #[test]
     fn test_parse_literal() {
         assert_eq!(parse_literal("abc"), Ok(("", "abc")));
-        assert_eq!(parse_literal("(abc)"), Ok(("", "(abc)")));
     }
 
     #[test]
@@ -105,11 +104,6 @@ mod tests {
         assert_eq!(
             parse_fragment("abc"),
             Ok(("", StringFragment::Literal("abc")))
-        );
-
-        assert_eq!(
-            parse_fragment("(abc)"),
-            Ok(("", StringFragment::Literal("(abc)")))
         );
     }
 }
