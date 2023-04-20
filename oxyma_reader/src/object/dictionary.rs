@@ -14,7 +14,7 @@ fn key_value(input: &str) -> IResult<&str, (String, ObjectValue)> {
 
 pub fn dictionary(input: &str) -> IResult<&str, HashMap<String, ObjectValue>> {
     preceded(
-        preceded(tag("<<"), multispace0),
+        preceded(multispace0, preceded(tag("<<"), multispace0)),
         terminated(
             map(separated_list0(multispace1, key_value), |tuple_pairs| {
                 tuple_pairs.into_iter().collect()
@@ -26,7 +26,7 @@ pub fn dictionary(input: &str) -> IResult<&str, HashMap<String, ObjectValue>> {
 
 #[cfg(test)]
 mod tests {
-    use crate::object::numeric::Numeric;
+    use crate::object::{numeric::Numeric, reference::Reference};
 
     use super::*;
 
@@ -87,6 +87,23 @@ mod tests {
         );
 
         assert_eq!(
+            dictionary("<</Type /Catalog /Pages 2 0 R>>"),
+            Ok((
+                "",
+                HashMap::from([
+                    ("Type".to_string(), ObjectValue::Name("Catalog".to_string())),
+                    (
+                        "Pages".to_string(),
+                        ObjectValue::Reference(Reference {
+                            obj_num: 2,
+                            gen_num: 0
+                        })
+                    )
+                ])
+            ))
+        );
+
+        assert_eq!(
             dictionary(
                 "<<
                 /Nested <<
@@ -104,6 +121,6 @@ mod tests {
                     )]))
                 )])
             ))
-        )
+        );
     }
 }

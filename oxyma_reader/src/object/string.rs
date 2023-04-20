@@ -1,6 +1,6 @@
 use nom::branch::alt;
 use nom::bytes::complete::{is_not, take};
-use nom::character::complete::char;
+use nom::character::complete::{char, multispace0};
 use nom::combinator::{map, map_opt, map_res, value, verify};
 use nom::multi::fold_many0;
 use nom::sequence::{delimited, preceded};
@@ -58,7 +58,7 @@ pub fn string(input: &str) -> IResult<&str, String> {
         string
     });
 
-    delimited(char('('), build_string, char(')'))(input)
+    delimited(preceded(multispace0, char('(')), build_string, char(')'))(input)
 }
 
 #[cfg(test)]

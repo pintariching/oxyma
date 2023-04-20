@@ -1,4 +1,5 @@
 use anyhow::Result;
+use oxyma_reader::pdf;
 
 #[derive(Debug, PartialEq)]
 struct PdfVersion {
@@ -7,11 +8,11 @@ struct PdfVersion {
 }
 
 fn main() -> Result<()> {
-    // let pdf = include_str!("example.pdf");
-    // let (input, pdf) = pdf_parser(pdf)?;
+    let str = include_str!("example.pdf");
+    let (input, pdf) = pdf(str)?;
 
-    // dbg!(pdf);
-    // dbg!(input);
+    dbg!(pdf);
+    dbg!(input);
 
     Ok(())
 }

@@ -1,7 +1,7 @@
 use nom::bytes::complete::tag;
-use nom::character;
-use nom::character::complete::{multispace0, space0, space1};
-use nom::sequence::{delimited, preceded};
+use nom::character::complete::{multispace0, space1, u32};
+use nom::combinator::map;
+use nom::sequence::{delimited, preceded, tuple};
 use nom::IResult;
 
 use crate::object::{object_value, ObjectValue};
@@ -14,25 +14,30 @@ pub struct IndirectObject {
 
 #[derive(Debug, PartialEq)]
 pub struct Identifier {
-    obj_num: u32,
-    gen_num: u32,
+    pub obj_num: u32,
+    pub gen_num: u32,
 }
 
 fn identifier(input: &str) -> IResult<&str, Identifier> {
-    let (input, obj_num) = preceded(multispace0, character::complete::u32)(input)?;
-    let (input, gen_num) = preceded(space1, character::complete::u32)(input)?;
-
-    Ok((input, Identifier { obj_num, gen_num }))
+    map(
+        tuple((multispace0, u32, space1, u32)),
+        |(_, obj_num, _, gen_num)| Identifier { obj_num, gen_num },
+    )(input)
 }
 
-fn indirect_object(input: &str) -> IResult<&str, IndirectObject> {
-    let (input, ident) = identifier(input)?;
-    let (input, value) = preceded(
-        space1,
-        delimited(tag("obj"), object_value, preceded(space0, tag("endobj"))),
-    )(input)?;
-
-    Ok((input, IndirectObject { ident, value }))
+pub fn indirect_object(input: &str) -> IResult<&str, IndirectObject> {
+    map(
+        tuple((
+            identifier,
+            space1,
+            delimited(
+                tag("obj"),
+                object_value,
+                preceded(multispace0, tag("endobj")),
+            ),
+        )),
+        |(ident, _, value)| IndirectObject { ident, value },
+    )(input)
 }
 
 #[cfg(test)]
